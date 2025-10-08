@@ -30,19 +30,20 @@ class WinMain (Window):
         self.menu.add_cascade(menu=self.reports, label="Reportes")
         self.menu.add_cascade(menu=self.preferences, label="Preferencias")
 
+        self.archive.add_command(label="Ayuda")
         self.archive.add_command(label="Configuracion", command=lambda:WinSettings(self))
         self.archive.add_command(label="Salir", command=self.destroy)
         
         self.cateloges.add_command(label="Camaras", command= lambda:WinCameras(self))
-        self.cateloges.add_command(label="Eventos", command=lambda:WinEvents)
+        self.cateloges.add_command(label="Eventos", command=lambda:WinEvents(self))
 
         self.reports.add_command(label="Reporte de Camaras", command=lambda:WinCamerasRep(self))
-        self.reports.add_command(label="Reporte de Eventos", command=lambda:WinEventsRep)
-        self.reports.add_command(label="Reporte de Evento por camara", command=lambda:WinEventCamRep)
+        self.reports.add_command(label="Reporte de Eventos", command=lambda:WinEventsRep(self))
+        self.reports.add_command(label="Reporte de Evento por camara", command=lambda:WinEventCamRep(self))
 
         self.preferences.add_command(label="Terminos y condiciones")
         self.preferences.add_command(label="Politicias de privacidad")
-        self.preferences.add_command(label="Acerca de sisa", command=lambda:WinAbout)
+        self.preferences.add_command(label="Acerca de sisa", command=lambda:WinAbout(self))
 
         image = Image.open("./public/logo.png")
 

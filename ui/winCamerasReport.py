@@ -2,12 +2,10 @@ from tkinter import *
 from tkinter import ttk
 from models.toplevel import TopWindow
 
+
 class WinCamerasRep (TopWindow):
     def __init__(self, master):
         super().__init__(master, title="Reporte de camaras",width=800,height=600, not_rezisable=False)
-
-        btn_search = ttk.Entry(self, )
-        btn_search.pack()
 
         btns = ttk.Frame(self, padding=10)
         btns.pack(fill="x", pady=10)
@@ -24,5 +22,4 @@ class WinCamerasRep (TopWindow):
         btn_excel.pack(side="left", expand=True, padx=5)
         btn_exit.pack(side="left", expand=True, padx=5)
         
-
         self.mainloop()

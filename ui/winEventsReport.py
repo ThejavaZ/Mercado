@@ -5,10 +5,7 @@ from models.toplevel import TopWindow
 class WinEventsRep (TopWindow):
     def __init__(self, master):
         super().__init__(master, title="Reporte de camaras",width=800,height=600, not_rezisable=False)
-
-        btn_search = ttk.Entry(self, )
-        btn_search.pack()
-
+        
         btns = ttk.Frame(self, padding=10)
         btns.pack(fill="x", pady=10)
 
