@@ -5,9 +5,21 @@ import threading
 import cv2
 from PIL import Image, ImageTk
 from ultralytics import YOLO
+import sys
+import os
 
 from models.camera import Camera
 from database.database import Database
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 class WinCameras(tk.Toplevel):
     def __init__(self, master):
@@ -24,7 +36,7 @@ class WinCameras(tk.Toplevel):
         
         # Cargar modelo YOLO una vez
         try:
-            self.yolo_model = YOLO('models/best.pt')
+            self.yolo_model = YOLO(resource_path('models/best.pt'))
         except Exception as e:
             messagebox.showerror("Error de Modelo", f"No se pudo cargar el modelo YOLO 'models/best.pt'.\n{e}")
             self.destroy()
@@ -64,7 +76,7 @@ class WinCameras(tk.Toplevel):
         self.edit_button = ttk.Button(button_frame, text="Editar", state="disabled", command=lambda: self._show_add_edit_window(edit_mode=True))
         self.edit_button.pack(side=tk.LEFT, padx=5)
 
-        self.delete_button = ttk.Button(butPIL._tkinter_finderton_frame, text="Eliminar", state="disabled", command=self._delete_camera)
+        self.delete_button = ttk.Button(button_frame, text="Eliminar", state="disabled", command=self._delete_camera)
         self.delete_button.pack(side=tk.LEFT, padx=5)
         
         self.exit_button = ttk.Button(button_frame, text="Salir", command=self.close_window)

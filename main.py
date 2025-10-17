@@ -3,8 +3,6 @@ from ui.winMain import WinMain
 
 class Main:
     WinMain()
-
-start_env()
-download_dependences()
+    
 cls()
 Main()

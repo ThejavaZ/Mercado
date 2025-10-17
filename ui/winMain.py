@@ -2,6 +2,18 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 from models.window import Window
+import sys
+import os
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 # --- Archive
 from ui.winSettings import WinSettings
@@ -45,7 +57,7 @@ class WinMain (Window):
         self.preferences.add_command(label="Politicias de privacidad")
         self.preferences.add_command(label="Acerca de sisa", command=lambda:WinAbout(self))
 
-        image = Image.open("./public/logo.png")
+        image = Image.open(resource_path("public/logo.png"))
 
         image = image.resize((300, 200), resample=Image.Resampling.LANCZOS)
         image_tk = ImageTk.PhotoImage(image=image)
