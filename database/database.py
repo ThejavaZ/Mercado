@@ -1,5 +1,6 @@
 import sqlite3
 from models.camera import Camera
+from models.event import Event
 import os
 
 class Database:
@@ -28,6 +29,16 @@ class Database:
                     username TEXT NOT NULL,
                     password TEXT NOT NULL,
                     port INTEGER NOT NULL
+                )
+            ''')
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS events (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    camera_id INTEGER NOT NULL,
+                    timestamp TEXT NOT NULL,
+                    description TEXT NOT NULL,
+                    image_path TEXT,
+                    FOREIGN KEY (camera_id) REFERENCES cameras (id)
                 )
             ''')
             conn.commit()
@@ -83,6 +94,60 @@ class Database:
             conn = self._get_connection()
             cursor = conn.cursor()
             cursor.execute("DELETE FROM cameras WHERE id=?", (camera_id,))
+            conn.commit()
+            return cursor.rowcount > 0
+        finally:
+            if conn:
+                conn.close()
+
+    def get_events(self) -> list[Event]:
+        """Obtiene todos los eventos de la base de datos y los devuelve como una lista de objetos Event."""
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            cursor.execute("SELECT id, camera_id, timestamp, description, image_path FROM events ORDER BY timestamp DESC")
+            rows = cursor.fetchall()
+            return [Event(id=row[0], camera_id=row[1], timestamp=row[2], description=row[3], image_path=row[4]) for row in rows]
+        finally:
+            if conn:
+                conn.close()
+
+    def add_event(self, event: Event) -> int:
+        """Agrega un nuevo evento a la base de datos."""
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO events (camera_id, timestamp, description, image_path) VALUES (?, ?, ?, ?)",
+                (event.camera_id, event.timestamp, event.description, event.image_path)
+            )
+            conn.commit()
+            return cursor.lastrowid
+        finally:
+            if conn:
+                conn.close()
+
+    def update_event(self, event: Event) -> bool:
+        """Actualiza un evento existente en la base de datos."""
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE events SET camera_id=?, timestamp=?, description=?, image_path=? WHERE id=?",
+                (event.camera_id, event.timestamp, event.description, event.image_path, event.id)
+            )
+            conn.commit()
+            return cursor.rowcount > 0
+        finally:
+            if conn:
+                conn.close()
+
+    def delete_event(self, event_id: int) -> bool:
+        """Elimina un evento de la base de datos por su ID."""
+        try:
+            conn = self._get_connection()
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM events WHERE id=?", (event_id,))
             conn.commit()
             return cursor.rowcount > 0
         finally:
